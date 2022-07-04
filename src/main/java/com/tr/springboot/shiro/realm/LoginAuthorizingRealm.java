@@ -42,10 +42,8 @@ public class LoginAuthorizingRealm extends AuthorizingRealm {
         if (!StringUtils.hasText(password)) {
             throw new UnknownAccountException("用户不存在");
         }
-        // 这里有三个参数，第一个是账号，第二个是密码，第三个是用户名
         // 这里传入的是用户正确的用户名和密码，shiro 拿正确的用户名密码去和传入的用户名密码参数做校验
-        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(username, password, username);
-//      SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getAccountNo(), user.getPassword(), user.getUsername());
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(username, password, getName());
         return simpleAuthenticationInfo;
     }
 
