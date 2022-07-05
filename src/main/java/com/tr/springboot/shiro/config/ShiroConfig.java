@@ -1,6 +1,8 @@
 package com.tr.springboot.shiro.config;
 
+import com.tr.springboot.shiro.properties.ShiroProperties;
 import com.tr.springboot.shiro.realm.LoginAuthorizingRealm;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.mgt.SecurityManager;
@@ -8,6 +10,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,13 +21,8 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
-    /**
-     * 配置realm
-     */
-    @Bean
-    public Realm realm() {
-        return new LoginAuthorizingRealm();
-    }
+    @Resource
+    ShiroProperties shiroProperties;
 
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
@@ -58,8 +56,29 @@ public class ShiroConfig {
     @Bean(name = "securityManager")
     public DefaultWebSecurityManager defaultWebSecurityManager(){
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        defaultWebSecurityManager.setRealm(realm());
+        defaultWebSecurityManager.setRealm(realm(getHashedCredentialsMatcher()));
         return defaultWebSecurityManager;
+    }
+
+    /**
+     * 配置realm
+     */
+    @Bean
+    public Realm realm(HashedCredentialsMatcher matcher) {
+        LoginAuthorizingRealm realm = new LoginAuthorizingRealm();
+        realm.setCredentialsMatcher(matcher);
+        return realm;
+    }
+
+    @Bean
+    public HashedCredentialsMatcher getHashedCredentialsMatcher(){
+        // matcher 就是用来指定加密规则
+        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
+        // 加密方式（SHA-256、MD5...）
+        matcher.setHashAlgorithmName(shiroProperties.getHashAlgorithmName());
+        // Hash次数，这里的 Hash 次数要与存储时加密的 Hash 次数保持一致
+        matcher.setHashIterations(shiroProperties.getHashIterations()); // 默认是 1，为 1 时可以不配置
+        return matcher;
     }
 
 }
