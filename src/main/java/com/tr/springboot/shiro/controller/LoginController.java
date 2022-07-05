@@ -6,6 +6,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,13 +51,13 @@ public class LoginController {
         return "403：没有权限，拒绝访问！";
     }
 
-    @RequiresPermissions("/list")
+    @RequiresPermissions("/list") // @RequiresPermissions 方式不推荐，建议在 ShiroConfig 中配置
     @GetMapping("/list")
     public String list() {
         return "list";
     }
 
-    @RequiresPermissions("/add")
+    @RequiresRoles("System") // @RequiresRoles 方式不推荐，建议在 ShiroConfig 中配置
     @GetMapping("/add")
     public String add() {
         return "add";
@@ -71,6 +72,16 @@ public class LoginController {
     @GetMapping("/update")
     public String insert() {
         return "update";
+    }
+
+    @GetMapping("/test/user")
+    public String user() {
+        return "user";
+    }
+
+    @GetMapping("/test/order")
+    public String order() {
+        return "order";
     }
 
 }

@@ -22,21 +22,26 @@ public class ShiroConfig {
      * 配置realm
      */
     @Bean
-    public Realm realm(){
-        return  new LoginAuthorizingRealm();
+    public Realm realm() {
+        return new LoginAuthorizingRealm();
     }
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
-        ShiroFilterFactoryBean shiroFilterFactoryBean=new ShiroFilterFactoryBean();
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        // 过滤器规则
-        // anon 代表不需要拦截验证
-        // authc 需要拦截验证，验证通过了，才能继续下一个页面，如果没有验证通过，那么跳转到 factoryBean.setLoginUrl("/login") 设置的地址
-        Map<String,String> filterChainDefinitionMap = new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/login/*/*", "anon");
-        filterChainDefinitionMap.put("/**", "authc");
-//        filterChainDefinitionMap.put("/update", "authz");
+        /**
+         * 过滤器规则
+         *  anon 代表不需要拦截验证
+         *  authc 需要拦截验证，验证通过了，才能继续下一个页面，如果没有验证通过，那么跳转到 factoryBean.setLoginUrl("/login") 设置的地址
+         *  注：anon 配置在最前，authc 配置在最后，其他配置在两者中间，否则（顺序的错乱）可能导致配置生效情况异常
+         */
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+        filterChainDefinitionMap.put("/login/*/*", "anon"); // anon 配置在最前
+//        filterChainDefinitionMap.put("/test/**", "roles[Admin, System]"); // 配置的 role 需要同时具备才能访问
+//        filterChainDefinitionMap.put("/test/**", "perms[/add, /test]");   // 配置的 perm 需要同时具备才能访问
+        filterChainDefinitionMap.put("/**", "authc");       // authc 配置在最后
+
         // 这里定义用户未认证时跳转的路径
         shiroFilterFactoryBean.setLoginUrl("/loginPage"); // 这里配置的地址不会被拦截，不用在 filterChainDefinitionMap 单独配置
         // 这里是用户登录成功后跳转的路径

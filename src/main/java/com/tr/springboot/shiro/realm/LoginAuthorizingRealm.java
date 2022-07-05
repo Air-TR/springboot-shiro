@@ -34,7 +34,7 @@ public class LoginAuthorizingRealm extends AuthorizingRealm {
         // 这里强转的类型不一定要是 UsernamePasswordToken，具体要看你在登录接口中所传的对象类型
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
         String username = usernamePasswordToken.getUsername();
-        if (!StringUtils.hasText(username)){
+        if (!StringUtils.hasText(username)) {
             throw new AccountException("用户名不能为空");
         }
         // 判断用户是否存在（实际业务操作中，这里是去数据库查询用户数据，用 user 对象去判断，而不是 password String 来判断）
@@ -60,10 +60,12 @@ public class LoginAuthorizingRealm extends AuthorizingRealm {
         // 角色
         Set<String> roles = new HashSet<>();
         roles.add("Admin");
+        roles.add("System");
         // 权限
         Set<String> permissions = new HashSet<>();
         permissions.add("/list");
         permissions.add("/add");
+        permissions.add("/test");
         // 为当前用户添加角色和权限
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roles);
