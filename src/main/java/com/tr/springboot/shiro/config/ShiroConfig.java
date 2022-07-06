@@ -61,7 +61,7 @@ public class ShiroConfig {
     }
 
     /**
-     * 配置realm
+     * 配置 realm
      */
     @Bean
     public Realm realm(HashedCredentialsMatcher matcher) {
@@ -70,6 +70,9 @@ public class ShiroConfig {
         return realm;
     }
 
+    /**
+     * 配置 Shiro 加密
+     */
     @Bean
     public HashedCredentialsMatcher getHashedCredentialsMatcher(){
         // matcher 就是用来指定加密规则
