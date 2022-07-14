@@ -11,11 +11,21 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "shiro")
 public class ShiroProperties {
 
+    private Boolean filterEnable;
+
     private String hashAlgorithmName;
 
     private Integer hashIterations;
 
     private String salt;
+
+    public Boolean getFilterEnable() {
+        return filterEnable;
+    }
+
+    public void setFilterEnable(Boolean filterEnable) {
+        this.filterEnable = filterEnable;
+    }
 
     public String getHashAlgorithmName() {
         return hashAlgorithmName;

@@ -14,8 +14,8 @@ public class ShiroExceptionAdvice {
 
     @ExceptionHandler(AuthorizationException.class)
     public ModelAndView unAuth(AuthorizationException e){
-        e.printStackTrace();
-        return new ModelAndView("/403");
+//        e.printStackTrace();
+        return new ModelAndView("/my403");
     }
 
 }

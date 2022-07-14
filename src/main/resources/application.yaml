@@ -3,6 +3,7 @@ server:
     context-path: /shiro
 
 shiro:
+  filterEnable: true          # 是否开启拦截验证过滤
   hashAlgorithmName: SHA-256  # 加密算法（SHA-256、MD5...）
   hashIterations: 1           # 加密 Hash 次数
   salt: SALT                  # 加密盐值

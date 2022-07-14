@@ -34,8 +34,9 @@ public class LoginAuthorizingRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         // 模拟数据库中用户数据
         Map<String, String> userInfo = new HashMap<>();
-        userInfo.put("James", "2c1980287463d99758e0200114b412f1e0b2c7c5b49a17bba6851e51b18190f7"); // 密码明文：123456
-        userInfo.put("Wade", "e18ec552bf6a1c9ac6a789aabc6fd136c04cefbde1eed3a5024a449e7f427ace"); // 密码明文：000000
+        userInfo.put("admin", "2c1980287463d99758e0200114b412f1e0b2c7c5b49a17bba6851e51b18190f7"); // 密码明文：123456
+        userInfo.put("system", "e18ec552bf6a1c9ac6a789aabc6fd136c04cefbde1eed3a5024a449e7f427ace"); // 密码明文：000000
+        userInfo.put("visitor", "2f5740b9080c4d12da10e61ba3903d4350bda6e8510f5644200589453a821671"); // 密码明文：123
 
         // 这里强转的类型不一定要是 UsernamePasswordToken，具体要看你在登录接口中所传的对象类型
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
@@ -64,19 +65,36 @@ public class LoginAuthorizingRealm extends AuthorizingRealm {
         // 这里 username 没有被使用，实际业务中可以用该 username 获取用户的 role 和 permission 进行赋值
         String username = (String) getAvailablePrincipal(principalCollection);
 
-        // 角色
+        // 角色（手动模拟赋值）
         Set<String> roles = new HashSet<>();
-        roles.add("Admin");
-        roles.add("System");
-        // 权限
-        Set<String> permissions = new HashSet<>();
-        permissions.add("/list");
-        permissions.add("/add");
-        permissions.add("/test");
+        if ("admin".equals(username)) {
+            roles.add("Admin");
+            roles.add("System");
+            roles.add("Visitor");
+        }
+        if ("system".equals(username)) {
+            roles.add("System");
+            roles.add("Visitor");
+        }
+        if ("visitor".equals(username)) {
+            roles.add("Visitor");
+        }
+        // 权限（手动模拟赋值）
+        Set<String> perms = new HashSet<>();
+        if (roles.contains("Admin")) {
+            perms.add("admin:*");
+        }
+        if (roles.contains("System")) {
+            perms.add("system:*");
+        }
+        if (roles.contains("Visitor")) {
+            perms.add("visitor:*");
+        }
+
         // 为当前用户添加角色和权限
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roles);
-        info.setStringPermissions(permissions);
+        info.setStringPermissions(perms);
         return info;
     }
 

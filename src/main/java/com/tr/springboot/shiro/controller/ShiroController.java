@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022/7/1 下午5:53
  */
 @RestController
-public class LoginController {
+public class ShiroController {
 
     @GetMapping("/login/{username}/{password}")
     public String login(@PathVariable String username, @PathVariable String password) {
@@ -48,40 +48,24 @@ public class LoginController {
 
     @GetMapping("/403")
     public String page403() {
-        return "403：没有权限，拒绝访问！";
+        return "403：没有权限，拒绝访问！（通过 ShiroConfig 配置重定向）";
     }
 
-    @RequiresPermissions("/list") // @RequiresPermissions 方式不推荐，建议在 ShiroConfig 中配置
-    @GetMapping("/list")
+    @GetMapping("/my403")
+    public String pageMy403() {
+        return "my403：没有权限，拒绝访问！（经过 ShiroExceptionAdvice 重定向）";
+    }
+
+    @RequiresPermissions("perm:view") // @RequiresPermissions 方式不推荐，建议在 ShiroConfig 中配置
+    @GetMapping("/requires/perm")
     public String list() {
-        return "list";
+        return "/requires/perm --> success";
     }
 
     @RequiresRoles("System") // @RequiresRoles 方式不推荐，建议在 ShiroConfig 中配置
-    @GetMapping("/add")
+    @GetMapping("/requires/role")
     public String add() {
-        return "add";
-    }
-
-    @RequiresPermissions("/delete")
-    @GetMapping("/delete")
-    public String delete() {
-        return "delete";
-    }
-
-    @GetMapping("/update")
-    public String insert() {
-        return "update";
-    }
-
-    @GetMapping("/test/user")
-    public String user() {
-        return "user";
-    }
-
-    @GetMapping("/test/order")
-    public String order() {
-        return "order";
+        return "/requires/role --> success";
     }
 
 }
